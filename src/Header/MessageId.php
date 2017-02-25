@@ -76,7 +76,7 @@ class MessageId implements HeaderInterface
             throw new Exception\InvalidArgumentException('Invalid ID detected');
         }
 
-        $this->messageId = sprintf('<%s>', $id);
+        $this->messageId = sprintf('<%s>', trim($id, "<>"));
         return $this;
     }
 

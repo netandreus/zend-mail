@@ -1,10 +1,8 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-mail for the canonical source repository
+ * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-mail/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Mail\Transport;
@@ -14,8 +12,6 @@ use ReflectionMethod;
 use ReflectionProperty;
 use Zend\Mail\Address\AddressInterface;
 use Zend\Mail\AddressList;
-use Zend\Mail\Header;
-use Zend\Mail\Headers;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\Exception\RuntimeException;
 use Zend\Mail\Transport\Sendmail;
@@ -222,5 +218,38 @@ class SendmailTest extends TestCase
         $r->setAccessible(true);
 
         $this->assertSame('-R hdrs', $r->getValue($this->transport));
+    }
+
+    public function testAllowMessageWithEmptyToHeaderButHasCcHeader()
+    {
+        $message = new Message();
+        $message->addCc('matthew@zend.com')
+                ->setSender('ralph.schindler@zend.com', 'Ralph Schindler')
+                ->setSubject('Testing Zend\Mail\Transport\Sendmail')
+                ->setBody('This is only a test.');
+
+        $this->transport->send($message);
+    }
+
+    public function testAllowMessageWithEmptyToHeaderButHasBccHeader()
+    {
+        $message = new Message();
+        $message->addBcc('zf-crteam@lists.zend.com', 'CR-Team, ZF Project')
+                ->setSender('ralph.schindler@zend.com', 'Ralph Schindler')
+                ->setSubject('Testing Zend\Mail\Transport\Sendmail')
+                ->setBody('This is only a test.');
+
+        $this->transport->send($message);
+    }
+
+    public function testDoNotAllowMessageWithoutToAndCcAndBccHeaders()
+    {
+        $message = new Message();
+        $message->setSender('ralph.schindler@zend.com', 'Ralph Schindler')
+                ->setSubject('Testing Zend\Mail\Transport\Sendmail')
+                ->setBody('This is only a test.');
+
+        $this->expectException(RuntimeException::class);
+        $this->transport->send($message);
     }
 }

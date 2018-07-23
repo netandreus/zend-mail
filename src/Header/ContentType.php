@@ -50,7 +50,9 @@ class ContentType implements UnstructuredInterface
             $length = count($values);
 
             for ($i = 0; $i < $length; $i += 2) {
-                $value = $values[$i + 1];
+                $value = isset($values[$i + 1])
+                    ? $values[$i + 1]
+                    : '';
                 $value = trim($value, "'\" \t\n\r\0\x0B");
                 $header->addParameter($values[$i], $value);
             }

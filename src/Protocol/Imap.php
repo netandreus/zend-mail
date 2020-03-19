@@ -628,19 +628,21 @@ class Imap
      *
      * @param  string $reference mailbox reference for list
      * @param  string $mailbox   mailbox name match with wildcards
+     * @param  bool $subscribedOnly get only subscribed folders or all folders
      * @return array mailboxes that matched $mailbox as array(globalName => array('delim' => .., 'flags' => ..))
      * @throws \Zend\Mail\Protocol\Exception\ExceptionInterface
      */
-    public function listMailbox($reference = '', $mailbox = '*')
+    public function listMailbox($reference = '', $mailbox = '*', $subscribedOnly = false)
     {
+        $command = $subscribedOnly ? 'LSUB' : 'LIST';
         $result = [];
-        $list = $this->requestAndResponse('LIST', $this->escapeString($reference, $mailbox));
+        $list = $this->requestAndResponse($command, $this->escapeString($reference, $mailbox));
         if (! $list || $list === true) {
             return $result;
         }
 
         foreach ($list as $item) {
-            if (count($item) != 4 || $item[0] != 'LIST') {
+            if (count($item) != 4 || $item[0] != $command) {
                 continue;
             }
             $result[$item[3]] = ['delim' => $item[2], 'flags' => $item[1]];

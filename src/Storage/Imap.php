@@ -319,14 +319,15 @@ class Imap extends AbstractStorage implements Folder\FolderInterface, Writable\W
      * get root folder or given folder
      *
      * @param  string $rootFolder get folder structure for given folder, else root
+     * @param  bool $subscribedOnly get only subscribed folders or all folders
      * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
      * @throws Protocol\Exception\RuntimeException
      * @return Folder root or wanted folder
      */
-    public function getFolders($rootFolder = null)
+    public function getFolders($rootFolder = null, $subscribedOnly = false)
     {
-        $folders = $this->protocol->listMailbox((string) $rootFolder);
+        $folders = $this->protocol->listMailbox((string) $rootFolder, '*', $subscribedOnly);
         if (! $folders) {
             throw new Exception\InvalidArgumentException('folder not found');
         }

@@ -167,6 +167,7 @@ class Imap extends AbstractStorage implements Folder\FolderInterface, Writable\W
      *   - password password for user 'username' [optional, default = '']
      *   - port port for IMAP server [optional, default = 110]
      *   - ssl 'SSL' or 'TLS' for secure sockets
+     *   - ssl_context_options Options passed to stream_context_create()
      *   - folder select this folder [optional, default = 'INBOX']
      *
      * @param  array $params mail reader specific parameters
@@ -200,9 +201,10 @@ class Imap extends AbstractStorage implements Folder\FolderInterface, Writable\W
         $password = isset($params->password) ? $params->password : '';
         $port     = isset($params->port)     ? $params->port     : null;
         $ssl      = isset($params->ssl)      ? $params->ssl      : false;
+        $ssl_context_options = isset($params->ssl_context_options) ? $params->ssl_context_options: [];
 
         $this->protocol = new Protocol\Imap();
-        $this->protocol->connect($host, $port, $ssl);
+        $this->protocol->connect($host, $port, $ssl, $ssl_context_options);
         if (!$this->protocol->login($params->user, $password)) {
             throw new Exception\RuntimeException('cannot login, user or password wrong');
         }

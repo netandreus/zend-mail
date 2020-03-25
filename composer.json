@@ -1,5 +1,5 @@
 {
-    "name": "zendframework/zend-mail",
+    "name": "netandreus/zend-mail",
     "description": "provides generalized functionality to compose and send both text and MIME-compliant multipart e-mail messages",
     "license": "BSD-3-Clause",
     "keywords": [
@@ -16,7 +16,7 @@
         "php": ">=5.5",
         "zendframework/zend-crypt": "~2.5",
         "zendframework/zend-loader": "~2.5",
-        "zendframework/zend-mime": "~2.5",
+        "particlebits/zend-mime": "~2.5",
         "zendframework/zend-stdlib": "~2.5",
         "zendframework/zend-validator": "~2.5"
     },
